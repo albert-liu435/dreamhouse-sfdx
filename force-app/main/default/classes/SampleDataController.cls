@@ -1,4 +1,9 @@
 public with sharing class SampleDataController {
+
+    /**
+    *导入数据
+    *
+    * */
     @AuraEnabled
     public static void importSampleData() {
         // this method will throw an AuraHandledException if the user does not have permission
@@ -16,6 +21,10 @@ public with sharing class SampleDataController {
         loadProperties();
     }
 
+    /**
+    * 进行删除操作
+    *
+    * */
     private static void deleteExistingData() {
         delete [SELECT Id FROM Bot_Command__c];
         delete [SELECT Id FROM Property_Favorite__c];
@@ -23,7 +32,15 @@ public with sharing class SampleDataController {
         delete [SELECT Id FROM Broker__c];
     }
 
+    /*
+    *
+    *加载数据
+    *
+    */
     private static String queryStaticResourceToJSON(String resourceName) {
+        //https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_staticresource.htm?q=StaticResource
+        //https://www.cnblogs.com/zero-zyq/p/13820688.html
+        //SECURITY_ENFORCED会严格按照权限走
         StaticResource resource = [
             SELECT Id, Body
             FROM StaticResource
@@ -32,7 +49,11 @@ public with sharing class SampleDataController {
         ];
         return resource.body.toString();
     }
-
+    /**
+    *
+    *加载数据
+    *
+    * */
     private static void loadBotCommands() {
         String botCommandsJSON = queryStaticResourceToJSON('botCommands');
 
@@ -65,6 +86,10 @@ public with sharing class SampleDataController {
         insert properties; //NOPMD
     }
 
+    /**
+    *用户如果没有权限的话就抛出异常
+    *
+    * */
     private static void guardAgainstUsersWithoutCrudPermissions() {
         /**
          * Guard method proving CRUD access to the appropriate objects.
@@ -77,12 +102,14 @@ public with sharing class SampleDataController {
             'Broker__c'
         };
 
+        //https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_methods_system_schema.htm
         List<Schema.DescribeSObjectResult> objectDescribe = Schema.describeSobjects(
             objectsToCRUDCheck,
             SObjectDescribeOptions.DEFERRED
         );
 
         for (Schema.DescribeSObjectResult obj : objectDescribe) {
+            //判断当前用户是否有权限进行删除和创建操作
             if (obj.isCreateable() != true && obj.isDeletable() != true) {
                 throw new AuraHandledException(
                     'You do not have permission to create or delete ' +

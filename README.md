@@ -165,6 +165,6 @@ DreamHouse has many more features not discussed here. For example, DreamHouse al
 
 
 
-地址：https://brave-bear-l2263g-dev-ed.trailblaze.lightning.force.com/lightning/n/trlhdtips__Welcome
-用户：albert.liu435@brave-bear-l2263g.com
+地址：https://resilient-goat-jan4b8-dev-ed.trailblaze.lightning.force.com/one/one.app
+用户：albert.liu435@resilient-goat-jan4b8.com
 密码：Aa876543211234
